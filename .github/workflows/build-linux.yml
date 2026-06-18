@@ -1,0 +1,50 @@
+name: Build Prism (Electron — Ubuntu/Debian)
+
+# Builds the Electron app into a Debian/Ubuntu .deb package plus a portable
+# AppImage using electron-builder, on an Ubuntu runner.
+on:
+  push:
+    branches: [ Prismatix-ubuntu ]
+  workflow_dispatch:
+  release:
+    types: [ created ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: electron
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build .deb + AppImage
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --linux deb AppImage --publish never
+
+      - name: Upload Linux artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Prism-ubuntu
+          path: |
+            electron/dist/*.deb
+            electron/dist/*.AppImage
+          if-no-files-found: error
+
+      - name: Attach to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            electron/dist/*.deb
+            electron/dist/*.AppImage

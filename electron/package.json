@@ -25,6 +25,11 @@
     "directories": { "output": "dist" },
     "win": { "target": ["nsis"] },
     "mac": { "target": ["dmg"], "category": "public.app-category.productivity" },
-    "linux": { "target": ["AppImage"], "category": "Network" }
+    "linux": {
+      "target": ["deb", "AppImage"],
+      "category": "Network",
+      "maintainer": "Prism <beststuffgg@gmail.com>",
+      "synopsis": "3D-aesthetic browser with a built-in multi-provider AI agent"
+    }
   }
 }
