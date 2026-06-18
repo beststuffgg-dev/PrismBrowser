@@ -3,7 +3,6 @@
 // rim lights over a faint grid floor, rendered dimly behind the whole UI.
 
 import * as THREE from '../../node_modules/three/build/three.module.js';
-import { OrbitControls } from '../../node_modules/three/examples/jsm/controls/OrbitControls.js';
 
 export function createBackdrop(canvas) {
   const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
@@ -12,10 +11,6 @@ export function createBackdrop(canvas) {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 100);
   camera.position.set(0, 0, 6);
-
-  const controls = new OrbitControls(camera, canvas);
-  controls.enablePan = false;
-  controls.enableZoom = false;
 
   // Rim lights
   const cyan = new THREE.PointLight(0x59f2ff, 600, 0, 1.2);
@@ -73,7 +68,6 @@ export function createBackdrop(canvas) {
     spinner.rotation.x += dt * 0.25;
     spinner.rotation.y += dt * 0.5;
     spinner.rotation.z += dt * 0.1;
-    controls.update();
     renderer.render(scene, camera);
   })();
 
