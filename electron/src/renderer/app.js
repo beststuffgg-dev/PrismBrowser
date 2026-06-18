@@ -297,3 +297,6 @@ fileInput.addEventListener('change', async (e) => {
 });
 
 syncProviderFields();
+
+// Ensure the WebGL canvases pick up their real on-screen size after layout.
+requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
