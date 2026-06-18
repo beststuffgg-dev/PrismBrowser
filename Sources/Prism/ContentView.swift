@@ -246,12 +246,22 @@ struct ContentView: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Settings").font(.headline)
             VStack(alignment: .leading, spacing: 4) {
-                Text("Anthropic API key").font(.caption).foregroundStyle(.secondary)
-                SecureField("sk-ant-…", text: $ai.apiKey).textFieldStyle(.roundedBorder)
+                Text("AI provider").font(.caption).foregroundStyle(.secondary)
+                Picker("Provider", selection: $ai.provider) {
+                    ForEach(AIProvider.allCases) { p in
+                        Text(p.displayName).tag(p)
+                    }
+                }
+                .labelsHidden()
+                .pickerStyle(.menu)
+            }
+            VStack(alignment: .leading, spacing: 4) {
+                Text("\(ai.provider.displayName) API key").font(.caption).foregroundStyle(.secondary)
+                SecureField(ai.provider.keyHint, text: ai.keyBinding()).textFieldStyle(.roundedBorder)
             }
             VStack(alignment: .leading, spacing: 4) {
                 Text("Model").font(.caption).foregroundStyle(.secondary)
-                TextField("model", text: $ai.model).textFieldStyle(.roundedBorder)
+                TextField(ai.provider.defaultModel, text: ai.modelBinding()).textFieldStyle(.roundedBorder)
             }
             Divider()
             Text("3D backdrop").font(.caption).foregroundStyle(.secondary)

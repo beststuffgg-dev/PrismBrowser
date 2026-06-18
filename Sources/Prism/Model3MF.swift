@@ -74,9 +74,9 @@ enum Model3MF {
                     attributes attr: [String: String]) {
             switch name {
             case "vertex":
-                let x = Float(attr["x"] ?? "0") ?? 0
-                let y = Float(attr["y"] ?? "0") ?? 0
-                let z = Float(attr["z"] ?? "0") ?? 0
+                let x = CGFloat(Double(attr["x"] ?? "0") ?? 0)
+                let y = CGFloat(Double(attr["y"] ?? "0") ?? 0)
+                let z = CGFloat(Double(attr["z"] ?? "0") ?? 0)
                 mesh.vertices.append(SCNVector3(x, y, z))
             case "triangle":
                 if let v1 = Int32(attr["v1"] ?? ""),
@@ -94,15 +94,17 @@ enum Model3MF {
 
     private static func makeNode(from mesh: Mesh) -> SCNNode {
         // Center on origin and scale so the largest dimension is ~2 units.
-        var minV = SCNVector3(Float.greatestFiniteMagnitude, .greatestFiniteMagnitude, .greatestFiniteMagnitude)
-        var maxV = SCNVector3(-Float.greatestFiniteMagnitude, -.greatestFiniteMagnitude, -.greatestFiniteMagnitude)
+        let big = CGFloat.greatestFiniteMagnitude
+        var minV = SCNVector3(big, big, big)
+        var maxV = SCNVector3(-big, -big, -big)
         for v in mesh.vertices {
             minV.x = min(minV.x, v.x); minV.y = min(minV.y, v.y); minV.z = min(minV.z, v.z)
             maxV.x = max(maxV.x, v.x); maxV.y = max(maxV.y, v.y); maxV.z = max(maxV.z, v.z)
         }
         let center = SCNVector3((minV.x+maxV.x)/2, (minV.y+maxV.y)/2, (minV.z+maxV.z)/2)
         let extent = max(maxV.x-minV.x, max(maxV.y-minV.y, maxV.z-minV.z))
-        let scale: Float = extent > 0 ? 2.0 / extent : 1.0
+        // SCNVector3 components are CGFloat on macOS, so keep the scalar CGFloat too.
+        let scale: CGFloat = extent > 0 ? 2.0 / extent : 1.0
 
         let normalized = mesh.vertices.map {
             SCNVector3(($0.x-center.x)*scale, ($0.y-center.y)*scale, ($0.z-center.z)*scale)
