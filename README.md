@@ -17,10 +17,12 @@ drive the browser through the Anthropic API.
 - **Customizable with .3mf models** — click the cube button (or Settings →
   Load .3mf) to swap in your own [3MF](https://3mf.io) model. Prism parses the
   mesh and renders it as a glowing wireframe + flat-shaded body.
-- **Agentic AI** — the side panel chats with Claude. With **Agent** mode on,
+- **Agentic AI, any provider** — the side panel chats with your choice of
+  **Claude, ChatGPT, Gemini, Perplexity or DeepSeek**. With **Agent** mode on,
   the model can call browser tools (`navigate`, `open_tab`, `read_page`,
   `go_back`) in a loop to actually accomplish web tasks, with each action shown
-  in the transcript.
+  in the transcript. (Perplexity runs as a plain chat — its API has no tool
+  calling.)
 
 ## Requirements
 
@@ -65,15 +67,19 @@ will build and upload `Prism.dmg` to that release automatically.
 
 ## Using the AI agent
 
-1. Click the gear icon and paste your Anthropic API key (or set the
-   `ANTHROPIC_API_KEY` environment variable before `swift run`).
-2. Optionally change the model (defaults to `claude-sonnet-4-5`).
-3. Keep **Agent** toggled on, then type a goal, e.g.
+1. Click the gear icon and pick a **provider** (Claude, ChatGPT, Gemini,
+   Perplexity or DeepSeek).
+2. Paste that provider's API key (or set its environment variable before
+   `swift run`): `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `GEMINI_API_KEY`,
+   `PERPLEXITY_API_KEY` or `DEEPSEEK_API_KEY`.
+3. Optionally change the model (each provider has a sensible default).
+4. Keep **Agent** toggled on, then type a goal, e.g.
    *"open Hacker News and summarize the top story."*
    The agent will navigate, read the page, and report back.
 
-> The key is held only in memory for the session and sent directly to
-> `api.anthropic.com`. Nothing is persisted to disk.
+> Keys are held only in memory for the session and sent directly to the
+> selected provider's API. Nothing is persisted to disk. Each provider keeps
+> its own key, so you can switch between them freely.
 
 ## Loading a 3D model
 
@@ -92,7 +98,8 @@ use Settings → Reset to return to the default wireframe object.
 | `WebView.swift` | `WKWebView` ↔ SwiftUI bridge |
 | `Scene3DView.swift` | Live SceneKit scene + model store |
 | `Model3MF.swift` | `.3mf` parser → `SCNGeometry` |
-| `AIController.swift` | Anthropic Messages API + agentic tool loop |
+| `AIProvider.swift` | Provider catalog (Claude/ChatGPT/Gemini/Perplexity/DeepSeek) + normalized tool/message types |
+| `AIController.swift` | Multi-provider chat + agentic tool loop |
 
 ## Notes & limits
 
