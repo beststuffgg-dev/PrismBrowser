@@ -1,14 +1,17 @@
 name: Build Prism (Electron — Arch Linux)
 
 # Builds the Electron app into an Arch .pacman package plus a portable
-# AppImage using electron-builder. electron-builder produces the pacman
-# package on an Ubuntu runner (no Arch runner needed).
+# AppImage (electron-builder produces the pacman package on an Ubuntu runner),
+# then publishes them as the "Prismatix Arch" GitHub Release.
 on:
   push:
     branches: [ Prismatix-arch ]
   workflow_dispatch:
   release:
     types: [ created ]
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -46,10 +49,19 @@ jobs:
             electron/dist/*.AppImage
           if-no-files-found: error
 
-      - name: Attach to release
-        if: github.event_name == 'release'
+      - name: Publish "Prismatix Arch" release
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: arch
+          name: Prismatix Arch
+          body: |
+            **Prismatix — Arch Linux** (Electron)
+
+            - `*.pacman` — install with: `sudo pacman -U prism-electron-*.pacman`
+            - `*.AppImage` — `chmod +x Prism-*.AppImage && ./Prism-*.AppImage`
+            - AUR `PKGBUILD` is available in `packaging/arch/`.
           files: |
             electron/dist/*.pacman
             electron/dist/*.AppImage
