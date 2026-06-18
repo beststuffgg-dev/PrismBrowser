@@ -3,7 +3,19 @@
 Prism is a native macOS browser built with SwiftUI + WebKit. It pairs a real
 WebKit browsing engine with a retro 3D-modeling look (beveled metal chrome,
 tilted glass panels, neon wireframe accents) and a built-in agent that can
-drive the browser through the Anthropic API.
+drive the browser through Claude, ChatGPT, Gemini, Perplexity or DeepSeek.
+
+## Platforms & variants
+
+| Platform | Implementation | Where | Installer |
+|----------|----------------|-------|-----------|
+| macOS | Native SwiftUI + WebKit + SceneKit | this branch (`Sources/`) | `.dmg` |
+| Windows / macOS | Electron (Three.js) | this branch (`electron/`) | `.exe` / `.dmg` |
+| Ubuntu / Debian | Electron | branch `Prismatix-ubuntu` | `.deb` + AppImage |
+| Arch Linux | Electron | branch `Prismatix-arch` | `.pacman` + AUR `PKGBUILD` |
+
+The Electron port mirrors the native app feature-for-feature and adds
+**customizable 3D geometric start-page wallpapers**. See `electron/README.md`.
 
 ## Features
 

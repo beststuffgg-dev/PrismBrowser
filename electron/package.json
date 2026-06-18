@@ -1,0 +1,30 @@
+{
+  "name": "prism-electron",
+  "productName": "Prism",
+  "version": "1.0.0",
+  "description": "Prism — a 3D-aesthetic web browser with a built-in multi-provider AI agent. Electron port (Windows / macOS / Linux).",
+  "main": "src/main.js",
+  "author": { "name": "Prism", "email": "beststuffgg@gmail.com" },
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win",
+    "dist:all": "electron-builder -wml"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "three": "^0.160.0",
+    "jszip": "^3.10.1"
+  },
+  "build": {
+    "appId": "com.prism.browser",
+    "productName": "Prism",
+    "directories": { "output": "dist" },
+    "win": { "target": ["nsis"] },
+    "mac": { "target": ["dmg"], "category": "public.app-category.productivity" },
+    "linux": { "target": ["AppImage"], "category": "Network" }
+  }
+}

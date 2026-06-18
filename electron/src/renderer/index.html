@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Prism</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Layer 0: live 3D backdrop -->
+  <div id="backdrop"><canvas id="scene"></canvas></div>
+
+  <!-- Layer 1: the browser UI -->
+  <div id="app">
+    <!-- Toolbar (beveled metal slab) -->
+    <div id="toolbar" class="slab">
+      <div class="navgroup">
+        <button class="chrome" id="btn-back" title="Back">&#8249;</button>
+        <button class="chrome" id="btn-forward" title="Forward">&#8250;</button>
+        <button class="chrome" id="btn-reload" title="Reload">&#10227;</button>
+      </div>
+
+      <div class="address-wrap">
+        <span class="globe">&#127760;</span>
+        <input id="address" type="text" placeholder="Search or enter address" spellcheck="false" />
+        <div class="progress" id="progress"></div>
+      </div>
+
+      <button class="chrome amber" id="btn-cube" title="Load a .3mf model into the 3D backdrop">&#9638;</button>
+      <button class="chrome" id="btn-settings" title="Settings">&#9881;</button>
+      <button class="chrome pink" id="btn-ai" title="Toggle AI panel">&#10024;</button>
+    </div>
+
+    <!-- Tab strip -->
+    <div id="tabstrip">
+      <div id="tabs"></div>
+      <button class="chrome" id="btn-newtab" title="New tab">+</button>
+    </div>
+
+    <!-- Content + AI sidebar -->
+    <div id="main">
+      <div id="content" class="recessed">
+        <!-- Start page: 3D geometric wallpaper + search, shown for new tabs -->
+        <div id="startpage" class="hidden">
+          <canvas id="wallpaper"></canvas>
+          <div class="start-inner">
+            <div class="start-logo">&#9670; Prism</div>
+            <div class="start-search">
+              <span class="globe">&#128269;</span>
+              <input id="start-address" type="text" placeholder="Search the web or enter an address" spellcheck="false" />
+            </div>
+            <div class="start-presets" id="start-presets"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sidebar" class="glass">
+        <div class="sidebar-head">
+          <span class="spark">&#10024;</span>
+          <span class="title">Prism Agent</span>
+          <label class="agent-toggle">
+            <input type="checkbox" id="agent-mode" checked /> Agent
+          </label>
+        </div>
+        <div class="sidebar-divider"></div>
+        <div id="messages" class="messages"></div>
+        <div id="composer" class="composer">
+          <textarea id="draft" rows="1" placeholder="Ask or command the agent…"></textarea>
+          <button class="chrome" id="btn-send" title="Send">&#8593;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings modal -->
+  <div id="settings-overlay" class="hidden">
+    <div id="settings" class="glass">
+      <div class="settings-row settings-title">Settings</div>
+
+      <label class="settings-row">
+        <span class="label">AI provider</span>
+        <select id="provider">
+          <option value="claude">Claude</option>
+          <option value="chatgpt">ChatGPT</option>
+          <option value="gemini">Gemini</option>
+          <option value="perplexity">Perplexity</option>
+          <option value="deepseek">DeepSeek</option>
+        </select>
+      </label>
+
+      <label class="settings-row">
+        <span class="label" id="key-label">Claude API key</span>
+        <input id="apikey" type="password" placeholder="sk-ant-…" />
+      </label>
+
+      <label class="settings-row">
+        <span class="label">Model</span>
+        <input id="model" type="text" placeholder="model" />
+      </label>
+
+      <div class="settings-divider"></div>
+      <div class="settings-row"><span class="label">Start-page wallpaper</span></div>
+      <label class="settings-row">
+        <select id="wallpaper-preset"></select>
+      </label>
+      <div class="settings-row buttons">
+        <label class="color-field"><span class="label">Primary</span><input type="color" id="color-a" value="#59f2ff" /></label>
+        <label class="color-field"><span class="label">Secondary</span><input type="color" id="color-b" value="#ff59d9" /></label>
+      </div>
+
+      <div class="settings-divider"></div>
+      <div class="settings-row"><span class="label">3D backdrop</span></div>
+      <div class="settings-row status" id="scene-status">Default: wireframe icosahedron</div>
+      <div class="settings-row buttons">
+        <button class="chrome" id="btn-load-3mf">Load .3mf…</button>
+        <button class="chrome" id="btn-reset-3mf">Reset</button>
+      </div>
+
+      <div class="settings-row buttons end">
+        <button class="chrome" id="btn-close-settings">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <input type="file" id="file-3mf" accept=".3mf" hidden />
+
+  <!-- JSZip (UMD global) for .3mf extraction, loaded before the app module. -->
+  <script src="../../node_modules/jszip/dist/jszip.min.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
