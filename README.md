@@ -1,0 +1,102 @@
+# Prism — a 3D-aesthetic macOS browser with a built-in AI agent
+
+Prism is a native macOS browser built with SwiftUI + WebKit. It pairs a real
+WebKit browsing engine with a retro 3D-modeling look (beveled metal chrome,
+tilted glass panels, neon wireframe accents) and a built-in agent that can
+drive the browser through the Anthropic API.
+
+## Features
+
+- **Real browsing** — WebKit (`WKWebView`) per tab, address/search bar, back /
+  forward / reload, multi-tab strip, live progress.
+- **Whole-UI 3D treatment** — every surface is styled with bevels, gloss,
+  drop shadows and subtle perspective tilt (`rotation3DEffect`). The toolbar
+  reads as an extruded metal slab; the AI panel is a tilted glass slate.
+- **Live spinning 3D scene** — a SceneKit view renders continuously behind the
+  UI: a procedural neon wireframe object by default, orbitable with the mouse.
+- **Customizable with .3mf models** — click the cube button (or Settings →
+  Load .3mf) to swap in your own [3MF](https://3mf.io) model. Prism parses the
+  mesh and renders it as a glowing wireframe + flat-shaded body.
+- **Agentic AI** — the side panel chats with Claude. With **Agent** mode on,
+  the model can call browser tools (`navigate`, `open_tab`, `read_page`,
+  `go_back`) in a loop to actually accomplish web tasks, with each action shown
+  in the transcript.
+
+## Requirements
+
+- macOS 13 (Ventura) or later
+- Xcode 15+ / Swift 5.9+ command-line tools
+
+## Build & run
+
+From the `PrismBrowser` folder:
+
+```bash
+swift run
+```
+
+The first launch compiles the package and opens the Prism window. (You can also
+open `Package.swift` in Xcode and hit Run.)
+
+### Package as a .dmg
+
+To build a distributable app + disk image:
+
+```bash
+./build_dmg.sh
+```
+
+This compiles a release build, assembles `Prism.app`, ad-hoc signs it, and
+writes a drag-to-Applications installer to `dist/Prism.dmg`. Since it isn't
+notarized, the first launch needs right-click → Open.
+
+### Build the .dmg on GitHub (no Mac needed locally)
+
+This repo ships a GitHub Actions workflow (`.github/workflows/build-dmg.yml`)
+that builds the DMG on a macOS runner. Once the repo is on GitHub:
+
+1. Push to `main` (or open the **Actions** tab → *Build Prism DMG* → **Run
+   workflow**).
+2. When the run finishes, open it and download **Prism-dmg** from the
+   *Artifacts* section.
+
+To attach the DMG to a versioned download, publish a **Release** — the workflow
+will build and upload `Prism.dmg` to that release automatically.
+
+## Using the AI agent
+
+1. Click the gear icon and paste your Anthropic API key (or set the
+   `ANTHROPIC_API_KEY` environment variable before `swift run`).
+2. Optionally change the model (defaults to `claude-sonnet-4-5`).
+3. Keep **Agent** toggled on, then type a goal, e.g.
+   *"open Hacker News and summarize the top story."*
+   The agent will navigate, read the page, and report back.
+
+> The key is held only in memory for the session and sent directly to
+> `api.anthropic.com`. Nothing is persisted to disk.
+
+## Loading a 3D model
+
+Click the **cube** button in the toolbar and choose a `.3mf` file. A sample
+`SampleCube.3mf` is included next to this README. Drag to orbit the camera;
+use Settings → Reset to return to the default wireframe object.
+
+## Project layout
+
+| File | Role |
+|------|------|
+| `PrismApp.swift` | App entry; wires browser + AI together |
+| `ContentView.swift` | Full UI: toolbar, tabs, content frame, AI sidebar, settings |
+| `Theme.swift` | The 3D look — gradients, bevels, chrome button style |
+| `BrowserState.swift` | Tab model, navigation, WebKit KVO bridging |
+| `WebView.swift` | `WKWebView` ↔ SwiftUI bridge |
+| `Scene3DView.swift` | Live SceneKit scene + model store |
+| `Model3MF.swift` | `.3mf` parser → `SCNGeometry` |
+| `AIController.swift` | Anthropic Messages API + agentic tool loop |
+
+## Notes & limits
+
+- Tools run with a 6-iteration cap to prevent runaway loops.
+- `read_page` truncates page text to ~8k characters to keep token use sane.
+- The `.3mf` loader reads the `3D/3dmodel.model` mesh (vertices + triangles)
+  via the system `unzip`; color/material extensions are ignored.
