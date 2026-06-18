@@ -38,13 +38,15 @@
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "icon": "build/icon.ico"
     },
     "mac": {
       "target": [
         "dmg"
       ],
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "icon": "build/icon.icns"
     },
     "linux": {
       "target": [
@@ -54,7 +56,8 @@
       "category": "Network",
       "executableName": "prism",
       "maintainer": "Prism <beststuffgg@gmail.com>",
-      "synopsis": "3D-aesthetic browser with a built-in multi-provider AI agent"
+      "synopsis": "3D-aesthetic browser with a built-in multi-provider AI agent",
+      "icon": "build/icon.png"
     }
   },
   "homepage": "https://github.com/beststuffgg-dev/PrismBrowser",
