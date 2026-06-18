@@ -2,9 +2,12 @@
   "name": "prism-electron",
   "productName": "Prism",
   "version": "1.0.0",
-  "description": "Prism — a 3D-aesthetic web browser with a built-in multi-provider AI agent. Electron port (Windows / macOS / Linux).",
+  "description": "Prism \u2014 a 3D-aesthetic web browser with a built-in multi-provider AI agent. Electron port (Windows / macOS / Linux).",
   "main": "src/main.js",
-  "author": { "name": "Prism", "email": "beststuffgg@gmail.com" },
+  "author": {
+    "name": "Prism",
+    "email": "beststuffgg@gmail.com"
+  },
   "scripts": {
     "start": "electron .",
     "dist": "electron-builder --win",
@@ -22,14 +25,40 @@
   "build": {
     "appId": "com.prism.browser",
     "productName": "Prism",
-    "directories": { "output": "dist" },
-    "win": { "target": ["nsis"] },
-    "mac": { "target": ["dmg"], "category": "public.app-category.productivity" },
+    "directories": {
+      "output": "dist"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "beststuffgg-dev",
+        "repo": "PrismBrowser"
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.productivity"
+    },
     "linux": {
-      "target": ["deb", "AppImage"],
+      "target": [
+        "deb",
+        "AppImage"
+      ],
       "category": "Network",
       "maintainer": "Prism <beststuffgg@gmail.com>",
       "synopsis": "3D-aesthetic browser with a built-in multi-provider AI agent"
     }
+  },
+  "homepage": "https://github.com/beststuffgg-dev/PrismBrowser",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/beststuffgg-dev/PrismBrowser.git"
   }
 }
