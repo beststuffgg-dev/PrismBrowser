@@ -11,6 +11,8 @@
     "dist:all": "electron-builder -wml"
   },
   "license": "MIT",
+  "homepage": "https://github.com/beststuffgg-dev/PrismBrowser",
+  "repository": { "type": "git", "url": "https://github.com/beststuffgg-dev/PrismBrowser.git" },
   "devDependencies": {
     "electron": "^30.0.0",
     "electron-builder": "^24.13.3"
@@ -23,6 +25,7 @@
     "appId": "com.prism.browser",
     "productName": "Prism",
     "directories": { "output": "dist" },
+    "publish": [{ "provider": "github", "owner": "beststuffgg-dev", "repo": "PrismBrowser" }],
     "win": { "target": ["nsis"] },
     "mac": { "target": ["dmg"], "category": "public.app-category.productivity" },
     "linux": { "target": ["AppImage"], "category": "Network" }
