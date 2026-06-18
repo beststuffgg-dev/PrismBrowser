@@ -48,6 +48,7 @@ cat > "$APP/Contents/Info.plist" <<PLIST
     <key>LSMinimumSystemVersion</key>  <string>13.0</string>
     <key>NSHighResolutionCapable</key> <true/>
     <key>NSPrincipalClass</key>        <string>NSApplication</string>
+    <key>CFBundleIconFile</key>        <string>Prism</string>
 </dict>
 </plist>
 PLIST
@@ -56,6 +57,10 @@ echo "PkgInfo" > "$APP/Contents/PkgInfo"
 printf 'APPL????' > "$APP/Contents/PkgInfo"
 
 echo "▸ Ad-hoc code-signing…"
+
+if [ -f "$ROOT/assets/logo/Prism.icns" ]; then
+  cp "$ROOT/assets/logo/Prism.icns" "$APP/Contents/Resources/Prism.icns"
+fi
 codesign --force --deep --sign - "$APP" || echo "  (codesign warning ignored)"
 
 echo "▸ Creating DMG…"
