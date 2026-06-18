@@ -129,7 +129,7 @@ final class AIController: ObservableObject {
         let name: String
         let input: [String: Any]
         var inputSummary: String {
-            input.map { "\($0)=\($1)" }.joined(separator: ", ")
+            input.map { "\($0.key)=\($0.value)" }.joined(separator: ", ")
         }
     }
     struct APIResponse {
@@ -149,7 +149,7 @@ final class AIController: ObservableObject {
             "model": model,
             "max_tokens": 1024,
             "system": "You are Prism's built-in browsing agent. Be concise. Use the provided tools to navigate and read pages when the user asks you to act on the web. Summarize what you find.",
-            "tools": agentMode ? toolSchema : [],
+            "tools": (agentMode ? toolSchema : []) as [[String: Any]],
             "messages": apiMessages
         ]
         req.httpBody = try JSONSerialization.data(withJSONObject: body)
