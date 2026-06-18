@@ -1,12 +1,16 @@
 name: Build Prism DMG
 
-# Builds the macOS app and packages Prism.dmg on a real macOS runner.
+# Builds the native macOS app and packages Prism.dmg on a real macOS runner,
+# then publishes it as the "Prismatix macOS" GitHub Release.
 on:
   push:
     branches: [ main, Prismatix ]
-  workflow_dispatch:        # lets you trigger it manually from the Actions tab
+  workflow_dispatch:
   release:
     types: [ created ]
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -32,10 +36,22 @@ jobs:
           path: dist/Prism.dmg
           if-no-files-found: error
 
-      # If this run was triggered by publishing a GitHub Release,
-      # attach the DMG to that release automatically.
-      - name: Attach DMG to release
-        if: github.event_name == 'release'
+      - name: Publish "Prismatix macOS" release
+        if: github.ref_name == 'Prismatix'
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          tag_name: macos
+          name: Prismatix macOS
+          body: |
+            **Prismatix — macOS** (native SwiftUI + WebKit + SceneKit)
+
+            ### Install
+            1. Open `Prism.dmg` and drag **Prism** into Applications.
+            2. The build is ad-hoc signed (not notarized). If macOS says
+               *"Prism is damaged"*, clear the quarantine flag in Terminal:
+               ```
+               xattr -dr com.apple.quarantine /Applications/Prism.app
+               ```
           files: dist/Prism.dmg

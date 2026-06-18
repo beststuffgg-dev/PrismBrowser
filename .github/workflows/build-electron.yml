@@ -1,13 +1,18 @@
 name: Build Prism (Electron — Windows & macOS)
 
 # Builds the Electron app into a Windows installer (.exe / NSIS) and a macOS
-# disk image (.dmg) using electron-builder.
+# disk image (.dmg). The Windows build is published as the "Prismatix Windows"
+# GitHub Release; the macOS .dmg is uploaded as an artifact (the native Swift
+# .dmg is the published macOS release).
 on:
   push:
     branches: [ Prismatix ]
   workflow_dispatch:
   release:
     types: [ created ]
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -53,8 +58,17 @@ jobs:
           path: ${{ matrix.glob }}
           if-no-files-found: error
 
-      - name: Attach to release
-        if: github.event_name == 'release'
+      - name: Publish "Prismatix Windows" release
+        if: matrix.os == 'windows-latest'
         uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          files: ${{ matrix.glob }}
+          tag_name: windows
+          name: Prismatix Windows
+          body: |
+            **Prismatix — Windows** (Electron, NSIS installer)
+
+            Run `Prism Setup *.exe`. The installer is unsigned, so SmartScreen
+            may warn — click **More info → Run anyway**.
+          files: electron/dist/*.exe
