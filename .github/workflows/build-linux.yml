@@ -1,0 +1,51 @@
+name: Build Prism (Electron — Arch Linux)
+
+# Builds the Electron app into an Arch .pacman package plus a portable
+# AppImage using electron-builder. electron-builder produces the pacman
+# package on an Ubuntu runner (no Arch runner needed).
+on:
+  push:
+    branches: [ Prismatix-arch ]
+  workflow_dispatch:
+  release:
+    types: [ created ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: electron
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build .pacman + AppImage
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx electron-builder --linux pacman AppImage --publish never
+
+      - name: Upload Arch artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Prism-arch
+          path: |
+            electron/dist/*.pacman
+            electron/dist/*.AppImage
+          if-no-files-found: error
+
+      - name: Attach to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            electron/dist/*.pacman
+            electron/dist/*.AppImage

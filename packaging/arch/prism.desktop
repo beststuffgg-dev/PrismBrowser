@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Prism
+Comment=3D-aesthetic browser with a built-in multi-provider AI agent
+Exec=prism-browser %U
+Icon=prism-browser
+Terminal=false
+Type=Application
+Categories=Network;WebBrowser;

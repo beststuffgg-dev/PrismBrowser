@@ -1,0 +1,39 @@
+# Maintainer: Prism <beststuffgg@gmail.com>
+#
+# AUR-style PKGBUILD for the Arch Linux variant of Prism (Electron).
+# Builds the app from source and installs the unpacked bundle to /opt.
+# (CI on the Prismatix-arch branch also produces a ready-made .pacman package
+#  via electron-builder — this PKGBUILD is the from-source alternative.)
+
+pkgname=prism-browser
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="3D-aesthetic browser with a built-in multi-provider AI agent (Electron)"
+arch=('x86_64')
+url="https://github.com/beststuffgg-dev/PrismBrowser"
+license=('MIT')
+depends=('gtk3' 'nss' 'alsa-lib' 'libxss')
+makedepends=('npm' 'git')
+options=('!strip')
+source=("git+https://github.com/beststuffgg-dev/PrismBrowser.git#branch=Prismatix-arch"
+        "prism.desktop")
+sha256sums=('SKIP' 'SKIP')
+
+build() {
+  cd "$srcdir/PrismBrowser/electron"
+  npm install
+  npx electron-builder --linux dir --publish never
+}
+
+package() {
+  cd "$srcdir/PrismBrowser/electron"
+
+  install -dm755 "$pkgdir/opt/$pkgname"
+  cp -r dist/linux-unpacked/. "$pkgdir/opt/$pkgname/"
+
+  install -dm755 "$pkgdir/usr/bin"
+  ln -sf "/opt/$pkgname/prism" "$pkgdir/usr/bin/prism-browser"
+
+  install -Dm644 "$srcdir/prism.desktop" \
+    "$pkgdir/usr/share/applications/prism-browser.desktop"
+}
